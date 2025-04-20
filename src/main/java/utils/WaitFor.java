@@ -1,0 +1,23 @@
+package utils;
+
+import java.time.Duration;
+import java.util.concurrent.Callable;
+import org.awaitility.Awaitility;
+
+public class WaitFor {
+
+    final Test test;
+
+    public WaitFor(Test test) {
+        this.test = test;
+    }
+
+
+    public void expectedCondition(Callable<Boolean> conditionEvaluator) {
+        Awaitility.await()
+                .pollInterval(Duration.ofSeconds(Long.parseLong(test.domainConfig()
+                .getInterval())))
+                .atMost(Duration.ofSeconds(Long.parseLong(test.domainConfig()
+                .getTimeOut()))).until(conditionEvaluator);
+    }
+}

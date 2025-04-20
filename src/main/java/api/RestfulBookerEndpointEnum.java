@@ -1,4 +1,4 @@
-package api;
-
-public class RestfulBookerEndpointEnum {
-}
+//package api;
+//
+//public class RestfulBookerEndpointEnum {
+//}
