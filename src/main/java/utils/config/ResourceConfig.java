@@ -41,7 +41,7 @@ public class ResourceConfig {
     }
 
     public String getEnvironmentProperties() {
-        final String envProperties = "testing.properties";
+        final String envProperties = "env.properties";
         return System.getProperty(envProperties) == null ? getResourcesPath() + "/" + envProperties
                 : getAbsolutePath() + System.getProperty(envProperties);
     }
