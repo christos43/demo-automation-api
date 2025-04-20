@@ -1,9 +1,6 @@
 package utils.config;
 // to antistoixo tou: ResourceConfig , auti i klasi travaei ta payloads apo ta input/output dirs
 
-
-import utils.Test;
-
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Objects;

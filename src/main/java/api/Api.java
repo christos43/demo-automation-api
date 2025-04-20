@@ -12,7 +12,8 @@ import utils.enums.User;
 import java.util.Map;
 
 public class Api {
-    private static final String PATH_AUTH = "vale_edw_to_auth_path";
+    private static final String PATH_AUTH = "/auth";
+    private static final String ACCESS_TOKEN_KEY = "token";
 
     final Test test;
     Response response;
@@ -21,7 +22,7 @@ public class Api {
         this.test = test;
     }
 
-    public String authenticate(User user) {
+    public String authenticateUser(User user) {
         String authUrl = test.domainConfig().getUrl(Application.RESTFULL_BOOKER) + PATH_AUTH;
 
         Map<String, String> credentials = Map.of(
@@ -33,8 +34,7 @@ public class Api {
             return response.getStatusCode() == 200;
         });
 
-        return response.getBody().as(JsonObject.class).get("access_token").toString();    // edw mporei sto
-                                                                                          // restful booker na min exei to idio onoma to access token
+        return response.getBody().as(JsonObject.class).get(ACCESS_TOKEN_KEY).toString();   //assumes all domains return an "access_token" as access token key
     }
 
     public Response apiGenericPostJson(String url, Map<String, String> params) {
