@@ -35,7 +35,7 @@ public class Api {
             return response.getStatusCode() == 200;
         });
 
-        return response.getBody().as(JsonObject.class).get(ACCESS_TOKEN_KEY).toString();   //assumes all domains return an "access_token" as access token key
+        return response.jsonPath().getString(ACCESS_TOKEN_KEY);   //assumes all targeted domains return "token" as access token key
     }
 
     public Response apiGenericPostJson(String url, Map<String, String> params) {

@@ -11,12 +11,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Properties;
 
-public class DomainConfig {
+public class EnvDataConfig {
 
 
     Test test;
 
-    public DomainConfig(Test test) {
+    public EnvDataConfig(Test test) {
         this.test = test;
     }
 

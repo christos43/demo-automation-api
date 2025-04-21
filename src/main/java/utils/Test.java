@@ -1,13 +1,13 @@
 package utils;
 
-import utils.config.DomainConfig;
+import utils.config.EnvDataConfig;
 import utils.config.ResourceConfig;
 
 import java.util.Objects;
 
 public class Test {
 
-    DomainConfig domainConfig;
+    EnvDataConfig envDataConfig;
     ResourceConfig resourceConfig;
     WaitFor waitFor;
 
@@ -15,8 +15,8 @@ public class Test {
     }
 
 
-    public DomainConfig domainConfig() {
-        return Objects.requireNonNullElseGet(domainConfig, () -> domainConfig = new DomainConfig(this));
+    public EnvDataConfig domainConfig() {
+        return Objects.requireNonNullElseGet(envDataConfig, () -> envDataConfig = new EnvDataConfig(this));
     }
 
     public ResourceConfig resourceConfig() {
