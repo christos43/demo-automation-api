@@ -1,3 +1,4 @@
-Feature:
+Feature: User creates new booking
 
-  Scenario:
+  Scenario: User creates new booking
+    Given user logs in to Restful Booker Api

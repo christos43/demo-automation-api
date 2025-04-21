@@ -15,9 +15,9 @@ public class WaitFor {
 
     public void expectedCondition(Callable<Boolean> conditionEvaluator) {
         Awaitility.await()
-                .pollInterval(Duration.ofSeconds(Long.parseLong(test.domainConfig()
+                .pollInterval(Duration.ofSeconds(Long.parseLong(test.envDataConfig()
                 .getInterval())))
-                .atMost(Duration.ofSeconds(Long.parseLong(test.domainConfig()
+                .atMost(Duration.ofSeconds(Long.parseLong(test.envDataConfig()
                 .getTimeOut()))).until(conditionEvaluator);
     }
 }

@@ -1,9 +1,11 @@
 package api;
 // αντιγραφο του api/CwmApi.java ->
 
-import io.cucumber.cienvironment.internal.com.eclipsesource.json.JsonObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
 import io.restassured.response.Response;
 import utils.Test;
 import utils.enums.Application;
@@ -11,7 +13,7 @@ import utils.enums.User;
 
 import java.util.Map;
 
-public class Api {
+public class RestfulBookerApi {
     private static final String PATH_AUTH = "/auth";
     private static final String ACCESS_TOKEN_KEY = "token";
 
@@ -19,27 +21,29 @@ public class Api {
     Response response;
 
 
-    public Api(Test test) {
+    public RestfulBookerApi(Test test) {
         this.test = test;
     }
 
-    public String authenticateUser(User user) {
-        String authUrl = test.domainConfig().getUrl(Application.RESTFULL_BOOKER) + PATH_AUTH;
+    public String authenticateUser(User user) throws JsonProcessingException {
+        String authUrl = test.envDataConfig().getUrl(Application.RESTFULL_BOOKER) + PATH_AUTH;
 
         Map<String, String> credentials = Map.of(
-                "username", test.domainConfig().getUsername(user),
-                "password", test.domainConfig().getPassword(user));
+                "username", test.envDataConfig().getUsername(user),
+                "password", test.envDataConfig().getPassword(user));
+
+        String body = new ObjectMapper().writeValueAsString(credentials);
 
         test.waitFor().expectedCondition(() -> {
-            response = apiGenericPostJson(authUrl, credentials);
+            response = apiGenericPostJson(authUrl, body);
             return response.getStatusCode() == 200;
         });
 
         return response.jsonPath().getString(ACCESS_TOKEN_KEY);   //assumes all targeted domains return "token" as access token key
     }
 
-    public Response apiGenericPostJson(String url, Map<String, String> params) {
-        return RestAssured.given().relaxedHTTPSValidation().accept(ContentType.JSON).params(params)
+    public Response apiGenericPostJson(String url, String body) {
+        return RestAssured.given().relaxedHTTPSValidation().accept(ContentType.JSON).body(body)
                 .log().all().post(url).then().log().all().extract().response();
     }
 
