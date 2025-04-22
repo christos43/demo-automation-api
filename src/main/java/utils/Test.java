@@ -2,6 +2,7 @@ package utils;
 
 import utils.config.EnvDataConfig;
 import utils.config.ResourceConfig;
+import utils.factory.ContextFactory;
 import utils.factory.WebServiceFactory;
 
 import java.util.Objects;
@@ -9,14 +10,19 @@ import java.util.Objects;
 public class Test {
 
     final WebServiceFactory webServiceFactory;
+    final ContextFactory contextFactory;
     EnvDataConfig envDataConfig;
     ResourceConfig resourceConfig;
     WaitFor waitFor;
 
     public Test() {
+        contextFactory = new ContextFactory();
         webServiceFactory = new WebServiceFactory(Test.this);
     }
 
+    public ContextFactory context() {
+        return contextFactory;
+    }
 
     public EnvDataConfig envDataConfig() {
         return Objects.requireNonNullElseGet(envDataConfig, () -> envDataConfig = new EnvDataConfig(this));

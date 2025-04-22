@@ -39,17 +39,20 @@ public class RestfulBookerApi {
             return response.getStatusCode() == 200;
         });
 
-        return response.jsonPath().getString(ACCESS_TOKEN_KEY);   //assumes all targeted domains return "token" as access token key
+        String token = response.jsonPath().getString(ACCESS_TOKEN_KEY);
+        test.context().setAuthContext(token);
+
+        return token;
     }
 
     public Response apiGenericPostJson(String url, String body) {
-        return RestAssured.given().relaxedHTTPSValidation().accept(ContentType.JSON).body(body)
+        return RestAssured.given().relaxedHTTPSValidation().contentType(ContentType.JSON).body(body)
                 .log().all().post(url).then().log().all().extract().response();
     }
 
     public Response apiGenericPostJson(String url, String body, String token) {
-        return RestAssured.given().auth().oauth2(token).relaxedHTTPSValidation().baseUri(url).contentType(ContentType.JSON)
-                .body(body).log().all().post().then().log().all().extract().response();
+        return RestAssured.given().auth().oauth2(token).relaxedHTTPSValidation().contentType(ContentType.JSON)
+                .body(body).log().all().post(url).then().log().all().extract().response();
     }
 
     public Response apiGenericGetJson(String url, Map<String, String> params, String token) {
