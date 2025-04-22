@@ -40,7 +40,7 @@ public class RestfulBookerApi {
         });
 
         String token = response.jsonPath().getString(ACCESS_TOKEN_KEY);
-        test.context().setAuthContext(token);
+        test.context().setAuthToken(token);
 
         return token;
     }
