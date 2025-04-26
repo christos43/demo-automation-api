@@ -3,6 +3,7 @@ package api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cucumber.datatable.DataTable;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
@@ -40,9 +41,12 @@ public class RestfulBookerApi {
         });
 
         String token = response.jsonPath().getString(ACCESS_TOKEN_KEY);
-        test.context().setAuthToken(token);
+        test.context().setAuthToken(token); //needs lombok plugin to work, not just the dependency in pom
 
         return token;
+    }
+
+    public void createBooking(DataTable bookingDetails) {
     }
 
     public Response apiGenericPostJson(String url, String body) {

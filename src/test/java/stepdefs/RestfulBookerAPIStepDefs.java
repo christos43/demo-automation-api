@@ -1,6 +1,7 @@
 package stepdefs;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -21,4 +22,10 @@ public class RestfulBookerAPIStepDefs {
     public void userLogin() throws JsonProcessingException {
         test.api().restfulBookerApi().authenticateUser(User.ADMIN);
     }
+
+    @When("they create a new booking with details")
+    public void userCreatesBooking(DataTable bookingDetails) {
+        test.api().restfulBookerApi().createBooking(bookingDetails);
+    }
+
 }
