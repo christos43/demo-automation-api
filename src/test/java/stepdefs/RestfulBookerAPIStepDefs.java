@@ -24,8 +24,13 @@ public class RestfulBookerAPIStepDefs {
     }
 
     @When("they create a new booking with details")
-    public void userCreatesBooking(DataTable bookingDetails) {
+    public void userCreatesBooking(DataTable bookingDetails) throws JsonProcessingException {
         test.api().restfulBookerApi().createBooking(bookingDetails);
     }
+
+//    @Then("they verify booking is created")
+//    public void verifyBooking() throws JsonProcessingException {
+//        test.api().restfulBookerApi().verifyExistingBooking(bookingDetails);
+//    }
 
 }
