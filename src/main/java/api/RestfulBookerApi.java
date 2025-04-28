@@ -11,21 +11,21 @@ import io.restassured.http.ContentType;
 
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
+import org.testng.Assert;
 import utils.Test;
 import utils.enums.Application;
 import utils.enums.User;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RestfulBookerApi {
     private static final String PATH_AUTH = "/auth";
     private static final String PATH_BOOKING = "/booking";
+    private static final String PATH_BOOKING_ID = "/booking/.*";
     private static final String ACCESS_TOKEN_KEY = "token";
+    private static final String PATH_REGEX = ".*";
 
     final Test test;
     Response response;
@@ -50,7 +50,7 @@ public class RestfulBookerApi {
         });
 
         String token = response.jsonPath().getString(ACCESS_TOKEN_KEY);
-        test.context().setAuthToken(token); //needs lombok plugin to work, not just the dependency in pom
+        test.context().setAuthToken(token);   //needs lombok plugin to work, not just the dependency in pom
 
         return token;
     }
@@ -77,24 +77,34 @@ public class RestfulBookerApi {
             booking.setAdditionalNeeds(List.of(needs.split(",")));
         }
 
-        Response response = test.api().restfulBookerApi().apiGenericPostJson(createBookingUrl, new ObjectMapper().writeValueAsString(booking), test.context().getAuthToken());
+        Response response = test.api().restfulBookerApi().apiGenericPostJson(createBookingUrl, new ObjectMapper()
+                .writeValueAsString(booking), test.context().getAuthToken());
         response.then().statusCode(HttpStatus.SC_OK);
+
+        test.context().setBooking(booking);
     }
 
-    public void verifyExistingBooking(DataTable bookingDetails) throws JsonProcessingException {
+    public void verifyBookingDetails() {
 
-//        Booking registeredBooking = test.context().getBooking();
-//        Booking retrievedbooking = test.api().restfulBookerApi().getBookingByLastName();
+        Booking registeredBooking = test.context().getBooking();
+        int bookingId = test.api().restfulBookerApi().getBookingIdsByLastName(registeredBooking.getLastName()).jsonPath()
+                .getInt("[0].bookingid");
 
-//        assertThat(retrievedBooking) //AssertJ magic
-//                .usingRecursiveComparison()
-//                .ignoringFields("additionalNeeds")
-//                .isEqualTo(registeredBooking);
+        Booking retrievedBooking = test.api().restfulBookerApi().getSingleBookingById(bookingId);
+        Assert.assertEquals(registeredBooking, retrievedBooking, "Booking details retrieved do not match registered instance");
+    }
 
-        //        test.waitFor().expectedCondition(() ->
-//                new HashSet<>(booking)
-//                        .containsAll(dataTable.asList()));
-//
+    private Booking getSingleBookingById(int bookingId) {
+
+        return test.api().restfulBookerApi().apiGenericGetJson(test.envDataConfig().getUrl(Application.RESTFULL_BOOKER)
+                + PATH_BOOKING_ID.replace(PATH_REGEX, Integer.toString(bookingId)), test.context().getAuthToken()).as(Booking.class);
+    }
+
+    private Response getBookingIdsByLastName(String lastName) {  // might return more than one booking
+        Map<String, String> params = Map.of("lastname", lastName);
+
+        return test.api().restfulBookerApi().apiGenericGetJson(test.envDataConfig().getUrl(Application.RESTFULL_BOOKER)
+                        + PATH_BOOKING, params, test.context().getAuthToken());
     }
 
     public Response apiGenericPostJson(String url, String body) {
@@ -107,9 +117,13 @@ public class RestfulBookerApi {
                 .body(body).log().all().post(url).then().log().all().extract().response();
     }
 
+    public Response apiGenericGetJson(String url, String token) {
+        return RestAssured.given().auth().oauth2(token).relaxedHTTPSValidation().baseUri(url).contentType(ContentType.JSON)
+                .log().all().get().then().log().all().extract().response();
+    }
     public Response apiGenericGetJson(String url, Map<String, String> params, String token) {
         return RestAssured.given().auth().oauth2(token).relaxedHTTPSValidation().params(params).baseUri(url).contentType(ContentType.JSON)
-                .log().all().post().then().log().all().extract().response();
+                .log().all().get().then().log().all().extract().response();
     }
 
 

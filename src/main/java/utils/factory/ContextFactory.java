@@ -1,6 +1,7 @@
 package utils.factory;
 
 
+import dto.Booking;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -9,5 +10,6 @@ import lombok.experimental.Accessors;
 public class ContextFactory {
 
   String authToken;
+  Booking booking;
 
 }

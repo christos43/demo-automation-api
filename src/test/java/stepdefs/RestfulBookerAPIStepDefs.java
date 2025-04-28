@@ -28,9 +28,9 @@ public class RestfulBookerAPIStepDefs {
         test.api().restfulBookerApi().createBooking(bookingDetails);
     }
 
-//    @Then("they verify booking is created")
-//    public void verifyBooking() throws JsonProcessingException {
-//        test.api().restfulBookerApi().verifyExistingBooking(bookingDetails);
-//    }
+    @Then("they verify booking is created")
+    public void verifyBooking() {
+        test.api().restfulBookerApi().verifyBookingDetails();
+    }
 
 }
